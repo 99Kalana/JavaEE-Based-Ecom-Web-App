@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Browsing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        #productContainer {
+            margin-top: 20px;
+        }
+        .product-card {
+            min-height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .btn-add-to-cart {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        #productBrowse{
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: auto;
+            top: 10%;
+        }
+
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Customer Homepage</a>
+        <h5 style="color: white; position: relative; left: 18%;">- Product Browse -</h5>
+        <div class="d-flex ms-auto me-3">
+            <a class="nav-link text-white mx-3" href="#">Product Browse</a>
+            <a class="nav-link text-white mx-3" href="#">Shopping Cart</a>
+            <a class="nav-link text-white mx-3" href="#">View Order History</a>
+        </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasDarkNavbar" aria-controls="offcanvasDarkNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasDarkNavbar" aria-labelledby="offcanvasDarkNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasDarkNavbarLabel">E-Commerce</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Profile Manage</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" style="color: red">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4" id="productBrowse">
+    <!-- Filter Options -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <h5>Filter by Category</h5>
+            <select id="categoryFilter" class="form-select">
+                <option value="">All Categories</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <h5>Search by Name</h5>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search for products...">
+        </div>
+        <div class="col-md-3">
+            <h5>Sort by Price</h5>
+            <select id="priceSort" class="form-select">
+                <option value="asc">Price: Low to High</option>
+                <option value="desc">Price: High to Low</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="productContainer" class="row row-cols-1 row-cols-md-3 g-4">
+        <!-- Product cards will be dynamically inserted here -->
+    </div>
+</div>
+
+<script src="../main/webapp/assets/js/jquery-3.7.1.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // Populate categories
+        const uniqueCategories = [...new Set(products.map(p => p.category_name))];
+        uniqueCategories.forEach(category => {
+            $('#categoryFilter').append(`<option value="${category}">${category}</option>`);
+        });
+
+        // Display products
+        function displayProducts(filteredProducts) {
+            $('#productContainer').empty();
+            filteredProducts.forEach(product => {
+                const productCard = `
+                    <div class="col">
+                        <div class="card product-card">
+                            <img src="${product.image_url}" alt="${product.product_name}" class="card-img-top">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.product_name}</h5>
+                                <p class="card-text">${product.description}</p>
+                                <p><strong>Price:</strong> $${product.price.toFixed(2)}</p>
+                                <p><strong>Stock:</strong> ${product.stock}</p>
+                                <p><strong>Category:</strong> ${product.category_name}</p>
+                                <button class="btn btn-primary btn-add-to-cart" data-id="${product.product_id}">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $('#productContainer').append(productCard);
+            });
+
+            // Add to Cart button click event
+            $('.btn-add-to-cart').click(function() {
+                const productId = $(this).data('id');
+                const product = products.find(p => p.product_id === productId);
+                alert(`${product.product_name} added to the cart!`);
+            });
+        }
+
+        // Filter, search, and sort products
+        function filterProducts() {
+            const category = $('#categoryFilter').val();
+            const searchQuery = $('#searchInput').val().toLowerCase();
+            const sortOrder = $('#priceSort').val();
+
+            let filteredProducts = products;
+
+            if (category) filteredProducts = filteredProducts.filter(p => p.category_name === category);
+            if (searchQuery) filteredProducts = filteredProducts.filter(p => p.product_name.toLowerCase().includes(searchQuery));
+            filteredProducts.sort((a, b) => sortOrder === "asc" ? a.price - b.price : b.price - a.price);
+
+            displayProducts(filteredProducts);
+        }
+
+        // Initialize
+        displayProducts(products);
+        $('#categoryFilter, #priceSort').change(filterProducts);
+        $('#searchInput').on('input', filterProducts);
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

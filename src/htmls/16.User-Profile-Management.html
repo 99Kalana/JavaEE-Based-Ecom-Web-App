@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .profile-container {
+            margin-top: 60px;
+        }
+        .profile-form {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .btn-save {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">Customer Homepage</a>
+        <h5 style="color: white; position: relative; left: 18%;">- Profile Management -</h5>
+        <div class="d-flex ms-auto me-3">
+            <a class="nav-link text-white mx-3" href="#">Product Browse</a>
+            <a class="nav-link text-white mx-3" href="#">Shopping Cart</a>
+            <a class="nav-link text-white mx-3" href="#">View Order History</a>
+            <a class="nav-link text-white mx-3" href="#">Profile Manage</a>
+        </div>
+    </div>
+</nav>
+
+<!-- Profile Management Section -->
+<div class="container profile-container">
+    <h3>Manage Your Profile</h3>
+
+    <!-- Update Personal Information Form -->
+    <form id="profileForm" class="profile-form">
+        <div class="form-group">
+            <label for="userId">User ID</label>
+            <input type="text" class="form-control" id="userId" value="1234" disabled>
+        </div>
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" id="username" value="currentUsername">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" value="currentEmail@example.com">
+        </div>
+
+        <div class="form-group">
+            <label for="password">New Password</label>
+            <input type="text" class="form-control" id="password" placeholder="Enter a new password">
+        </div>
+
+        <div class="form-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="text" class="form-control" id="confirmPassword" placeholder="Confirm your new password">
+        </div>
+
+        <button type="button" class="btn btn-primary btn-save" id="saveChangesBtn">Save Changes</button>
+    </form>
+</div>
+
+<script src="../main/webapp/assets/js/jquery-3.7.1.min.js"></script>
+<script>
+    // Mock user data (replace this with data from the server)
+    const currentUser = {
+        userId: '1234',
+        username: 'currentUsername',
+        email: 'currentEmail@example.com'
+    };
+
+    // Pre-fill the form with user data
+    $('#userId').val(currentUser.userId);
+    $('#username').val(currentUser.username);
+    $('#email').val(currentUser.email);
+
+    // Handle Save Changes button click
+    $('#saveChangesBtn').click(function () {
+        const username = $('#username').val();
+        const email = $('#email').val();
+        const password = $('#password').val();
+        const confirmPassword = $('#confirmPassword').val();
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match!');
+            return;
+        }
+
+        // Mock form submission (Replace this with a real AJAX request to the server)
+        console.log('Saving changes:', { username, email, password });
+
+        // In real implementation, send the updated user data to the server (e.g., using AJAX)
+        // Example:
+        /*
+        $.ajax({
+            url: '/updateProfile', // Your endpoint here
+            method: 'POST',
+            data: { username, email, password },
+            success: function(response) {
+                alert('Profile updated successfully!');
+            },
+            error: function(error) {
+                alert('An error occurred while updating your profile.');
+            }
+        });
+        */
+        alert('Profile updated successfully!');
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
