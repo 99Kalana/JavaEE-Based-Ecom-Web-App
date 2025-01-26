@@ -1,8 +1,7 @@
-<%--
 <%@ page import="org.example.javaee_ecommerce_web_application_aad.CartDTO" %>
 <%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -119,8 +118,8 @@
     <!-- Order Summary -->
     <div class="order-summary">
         <h4>Order Summary</h4>
-        <p><strong>Total Items:</strong> <span id="totalItems"></span></p>  &lt;%&ndash;<%= totalItems %>&ndash;%&gt;
-        <p><strong>Total Price:</strong> $<span id="totalPrice"></span></p> &lt;%&ndash;<%= totalPrice %>&ndash;%&gt;
+        <p><strong>Total Items:</strong> <span id="totalItems"></span></p>  <%--<%= totalItems %>--%>
+        <p><strong>Total Price:</strong> $<span id="totalPrice"></span></p> <%--<%= totalPrice %>--%>
         <button class="btn btn-success btn-place-order" id="placeOrderButton">Place Order</button>
     </div>
 </div>
@@ -219,4 +218,3 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
---%>
