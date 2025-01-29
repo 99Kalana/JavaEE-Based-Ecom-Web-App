@@ -88,17 +88,34 @@ public class BrowseProductServlet extends HttpServlet {
                 }
             }
 
+            String fetchedProductName = "SELECT product_name FROM products WHERE product_id = ?";
+            String productName = " ";
+
+            try (PreparedStatement fetchProductNameStmt = connection.prepareStatement(fetchedProductName)) {
+                fetchProductNameStmt.setString(1, productId);
+                try (ResultSet rs = fetchProductNameStmt.executeQuery()) {
+                    if (rs.next()) {
+                        productName = rs.getString("product_name");
+                    } else {
+                        response.sendRedirect("13.Product-Browsing.jsp?error=Product name not found.");
+                        return;
+                    }
+                }
+            }
+
+
             // Insert the item into the cart
-            String insertCartQuery = "INSERT INTO cart (user_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
+            String insertCartQuery = "INSERT INTO cart (user_id, product_id, product_name, quantity, price) VALUES (?, ?, ?, ?, ?)";
             try (PreparedStatement insertCartStmt = connection.prepareStatement(insertCartQuery)) {
                 insertCartStmt.setString(1, userId);
                 insertCartStmt.setString(2, productId);
-                insertCartStmt.setInt(3, quantity);
-                insertCartStmt.setDouble(4, price);
+                insertCartStmt.setString(3,productName);
+                insertCartStmt.setInt(4, quantity);
+                insertCartStmt.setDouble(5, price);
                 insertCartStmt.executeUpdate();
             }
 
-            response.sendRedirect("14.Shopping-Cart.jsp?message=Item added to cart successfully.");
+            response.sendRedirect("13.Product-Browsing.jsp?message=Item added to cart successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
             response.sendRedirect("13.Product-Browsing.jsp?error=An error occurred while adding to cart.");

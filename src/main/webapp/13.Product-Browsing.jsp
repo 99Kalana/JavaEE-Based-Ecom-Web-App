@@ -274,6 +274,7 @@
         // Add event listener for the Add to Cart buttons
         $('.btn-add-to-cart').on('click', function () {
             var productId = $(this).data('id');
+            var productName = $(this).data('name');
             var quantity = 1;
 
             // Make AJAX POST request to add product to the cart
@@ -282,6 +283,7 @@
                 type: 'POST',
                 data: {
                     product_id: productId,
+                    product_name : productName,
                     quantity: quantity
                 },
                 success: function (response) {

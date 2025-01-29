@@ -38,13 +38,14 @@ public class CartListServlet extends HttpServlet {
                         rst.getInt(1),
                         rst.getString(2),
                         rst.getString(3),
-                        rst.getInt(4),
-                        rst.getDouble(5)
+                        rst.getString(4),
+                        rst.getInt(5),
+                        rst.getDouble(6)
                 );
                 cartList.add(cartDTO);
             }
             req.setAttribute("cartItems", cartList);
-            RequestDispatcher rd = req.getRequestDispatcher("14.Shopping-Cart.jsp");
+            RequestDispatcher rd = req.getRequestDispatcher("/14.Shopping-Cart.jsp");
             rd.forward(req, resp);
 
         } catch (Exception e) {

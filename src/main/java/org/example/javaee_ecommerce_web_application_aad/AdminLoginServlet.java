@@ -29,13 +29,19 @@ public class AdminLoginServlet extends HttpServlet {
 
         try (Connection connection = dataSource.getConnection()) {
 
-            String query = "SELECT password_hash FROM users WHERE username = ?";
+            String query = "SELECT password_hash, role FROM users WHERE username = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
                 preparedStatement.setString(1, username);
                 try (ResultSet resultSet = preparedStatement.executeQuery()) {
                     if (resultSet.next()) {
                         String hashedPassword = resultSet.getString("password_hash");
+                        String userRole = resultSet.getString("role");
 
+
+                        if (!userRole.equals("ADMIN")) {
+                            resp.sendRedirect("4.Admin-User-Logins.jsp?error=Wrong User Role!");
+                            return;
+                        }
 
                         if (BCrypt.checkpw(password, hashedPassword)) {
 
