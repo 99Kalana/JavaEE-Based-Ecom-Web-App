@@ -30,24 +30,24 @@ public class OrderManageServlet extends HttpServlet {
 
         if (action != null && orderId != null && !orderId.trim().isEmpty()) {
             try (Connection connection = dataSource.getConnection()) {
-                boolean success = false;
+                boolean success;
 
                 if ("shipped".equalsIgnoreCase(action)) {
-                    success = updateUserStatus(orderId, SHIPPED, connection);
+                    success = updateOrderStatus(orderId, SHIPPED, connection);
                     if (success) {
                         resp.sendRedirect("11.Order-Management?message=Order shipped successfully!");
                     } else {
                         resp.sendRedirect("11.Order-Management?error=Failed to ship order!");
                     }
                 } else if ("delivered".equalsIgnoreCase(action)) {
-                    success = updateUserStatus(orderId, DELIVERED, connection);
+                    success = updateOrderStatus(orderId, DELIVERED, connection);
                     if (success) {
                         resp.sendRedirect("11.Order-Management?message=Order delivered successfully!");
                     } else {
                         resp.sendRedirect("11.Order-Management?error=Failed to deliver order!");
                     }
                 } else if ("cancel".equalsIgnoreCase(action)) {
-                    success = updateUserStatus(orderId, CANCEL, connection);
+                    success = updateOrderStatus(orderId, CANCEL, connection);
                     if (success) {
                         resp.sendRedirect("11.Order-Management?message=Order canceled successfully!");
                     } else {
@@ -72,7 +72,7 @@ public class OrderManageServlet extends HttpServlet {
     }
 
 
-    private boolean updateUserStatus(String orderId, String status, Connection connection) throws SQLException {
+    private boolean updateOrderStatus(String orderId, String status, Connection connection) throws SQLException {
         String sql = "UPDATE orders SET status = ? WHERE order_id = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, status);
