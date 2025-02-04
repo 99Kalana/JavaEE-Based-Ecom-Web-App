@@ -75,6 +75,23 @@
 
 <div class="container cart-container" id="cart">
 
+    <%-- Display success or error message (centered) --%>
+    <% String message = request.getParameter("message"); %>
+    <% String error = request.getParameter("error"); %>
+
+    <% if (message != null) { %>
+    <div class="alert alert-success text-center" role="alert">
+        <%= message %>
+    </div>
+    <% } %>
+
+    <% if (error != null) { %>
+    <div class="alert alert-danger text-center" role="alert">
+        <%= error %>
+    </div>
+    <% } %>
+
+
         <%
             List<CartDTO> dataList = (List<CartDTO>) request.getAttribute("cartItems");
             if (dataList != null && !dataList.isEmpty()) {
@@ -137,12 +154,14 @@
 <script src="assets/js/jquery-3.7.1.min.js"></script>
 
 <script>
-    const cartItems = <%= new Gson().toJson(cartItems) %>;
+    let cartItems = [];
+    <% if (cartItems != null && !cartItems.isEmpty()) { %>
+    cartItems = <%= new Gson().toJson(cartItems) %>;
+    <% } %>
 </script>
 
 
 <script>
-    // Render cart dynamically and update the session
     function renderCart() {
         const cartTableBody = $('#cartTableBody');
         cartTableBody.empty();
@@ -157,11 +176,12 @@
                     double itemTotal = item.getPrice() * item.getQuantity();
         %>
 
-        const itemTotal = <%= item.getPrice() * item.getQuantity() %>;
-        totalItems += <%= item.getQuantity() %>;
-        totalPrice += itemTotal;
+        cartItems.forEach(item => {
+            const itemTotal = item.price * item.quantity;
+            totalItems += item.quantity;
+            totalPrice += itemTotal;
 
-        const row = `
+            const row = `
             <tr>
                 <td><%= item.getProductId() %></td>
                 <td><%= item.getProductName() %></td>
@@ -175,7 +195,8 @@
                 </td>
             </tr>
         `;
-        cartTableBody.append(row);
+            cartTableBody.append(row);
+        });
 
         <%
                 }
@@ -183,8 +204,9 @@
         %>
 
         $('#totalItems').text(totalItems);
-        $('#totalPrice').text(totalPrice.toFixed(2));
+        $('#totalPrice').text(`Rs ${totalPrice.toFixed(2)}`);
     }
+
 
     // Update cart quantity
     $(document).on('change', '.quantity-input', function () {
@@ -200,11 +222,13 @@
     // Remove item from cart
     $(document).on('click', '.btn-remove', function () {
         const productId = $(this).data('id');
-        const itemIndex = cartItems.findIndex(item => item.product_id === productId);
-        if (itemIndex !== -1) {
-            cartItems.splice(itemIndex, 1);
-            renderCart();
-        }
+
+        cartItems = cartItems.filter(item => item.productId !== productId);
+
+        // Send update to session
+        $.post('UpdateCartServlet', { cartItems: JSON.stringify(cartItems) });
+
+        renderCart();
     });
 
     // Place order
@@ -214,15 +238,20 @@
             return;
         }
 
-        const orderDetails = cartItems.map(item => ({
-            product_id: item.product_id,
-            quantity: item.quantity,
-            price: item.price
-        }));
-
-        // Send order details to the server (mocked here)
-        console.log('Placing order:', orderDetails);
-        alert('Order placed successfully!');
+        $.ajax({
+            type: 'POST',
+            url: 'http://localhost:8080/JavaEE_ECommerce_Web_Application_AAD_war_exploded/cartPlaceOrder', // Ensure this is the correct backend endpoint
+            contentType: 'application/json',
+            data: JSON.stringify(cartItems),
+            success: function (response) {
+                alert('Order placed successfully!');
+                //window.location.href = 'orderConfirmation.jsp'; // Redirect to confirmation page
+            },
+            error: function (error) {
+                console.error('Error placing order:', error);
+                alert('Failed to place order. Try again.');
+            }
+        });
 
         // Clear cart
         cartItems.length = 0;

@@ -75,27 +75,27 @@
                 <%= error %>
             </div>
             <% } %>
-            <form id="itemForm">
+            <form id="itemForm" method="post" action="order-manage">
                 <div class="row mb-3">
                     <div class="col">
                         <label for="order_id" class="form-label">Order ID</label>
-                        <input type="text" class="form-control" id="order_id" placeholder="Order ID" required>
+                        <input type="text" class="form-control" id="order_id" name="order_id" placeholder="Order ID" required>
                     </div>
                     <div class="col">
                         <label for="user_id" class="form-label">User ID</label>
-                        <input type="text" class="form-control" id="user_id" placeholder="User ID" required>
+                        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="User ID" required>
                     </div>
                     <div class="col">
                         <label for="total_amount" class="form-label">Total Amount</label>
-                        <input type="text" class="form-control" id="total_amount" placeholder="Total Amount" required>
+                        <input type="text" class="form-control" id="total_amount" name="total_amount" placeholder="Total Amount" required>
                     </div>
                     <div class="col">
                         <label for="order_date" class="form-label">Order Date</label>
-                        <input type="text" class="form-control" id="order_date" placeholder="Order Date" required>
+                        <input type="text" class="form-control" id="order_date" name="order_date" placeholder="Order Date" required>
                     </div>
                     <div class="col">
                         <label for="status" class="form-label">Status</label>
-                        <input type="text" class="form-control" id="status" placeholder="Status" required>
+                        <input type="text" class="form-control" id="status" name="status" placeholder="Status" required>
                     </div>
                 </div>
 
@@ -103,6 +103,9 @@
                 <div class="row mb-3">
                     <div class="col d-flex justify-content-center">
                         <button type="button" id="searchOrder" class="btn btn-outline-info mx-2">Search Order Details</button>
+                        <button type="submit" id="orderShipped" name="action" value="shipped" class="btn btn-primary mx-2">Order Shipped</button>
+                        <button type="submit" id="orderDelivered" name="action" value="delivered" class="btn btn-warning mx-2">Order Delivered</button>
+                        <button type="submit" id="orderCancel" name="action" value="cancel" class="btn btn-danger mx-2">Cancel Order</button>
                         <button type="reset" id="clearOrder" class="btn btn-success mx-2">Clear</button>
                     </div>
                 </div>
@@ -203,8 +206,8 @@
 
                 if (response) {
                     $('#user_id').val(response.user_id);
-                    $('#total_amount').val(response.total);
-                    $('#order_date').val(response.dateTime);
+                    $('#total_amount').val(response.totalAmount);
+                    $('#order_date').val(response.orderDate);
                     $('#status').val(response.status);
                 } else {
                     alert('No product data received.');
